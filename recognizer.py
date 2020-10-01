@@ -5,7 +5,7 @@ class FaceRecognition():
             def __init__(target,biometric):
                         self.target=target
                         self.biometric=biometric
-            def Simple_Faces_Compare(self):#SFC
+            def simple_faces_compare(self):#SFC
                         target= face_recognition .load_image_file(self.target)
                         lookup= face_recognition .load_image_file(self.biometric)
                         target_encoding= face_recognition .face_encodings(target)
@@ -16,7 +16,7 @@ class FaceRecognition():
                         else:return 'No Face Found in image 2'
                         return True if True in face_recognition.compare_faces([target_encoding],lookup_encoding) else False
        
-            def Foreced_Faces_Compare(self):#FFC
+            def foreced_faces_compare(self):#FFC
                         lookups=  face_recognition.load_image_file(self.biometrics)
                         target= face_recognition.load_image_file(self.target)
                         lookups_encoding=   face_recognition.face_encodings(lookups)
