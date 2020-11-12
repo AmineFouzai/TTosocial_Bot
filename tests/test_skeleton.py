@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from project.skeleton import fib
+from bot.skeleton import fib
 
 __author__ = "MedAmineFouzai"
 __copyright__ = "MedAmineFouzai"
