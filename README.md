@@ -4,3 +4,5 @@
  
  this project is under development the github module can gain a rate on 300 to 400 follow per day .
  working currently on other social media website liek(facebook,twitter,instagram,linkdein...etc)
+ 
+ # @supports chrome only for now
