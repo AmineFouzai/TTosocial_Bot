@@ -1,11 +1,11 @@
 import sys 
 from selenium.webdriver import ChromeOptions
-sys.path.insert(1,"./src/bot")
+sys.path.insert(1,"./src/github/")
 
-from bot import GitHubBot
+from github import GitHubBot
 
 options=ChromeOptions()
 options.add_argument('--disable-notifications')
 # options.add_argument('--headless')
-app=GitHubBot(login="mail",password="pass",options=options)
-app.run(to_follow=False,unfollow=False)
+app=GitHubBot(login=sys.argv[0],password=sys.argv[1],options=options)
+app.run(to_follow=True,unfollow=False)
