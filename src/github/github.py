@@ -38,6 +38,7 @@ class GitHubBot(Chrome):
             elif unfollow == True:
                     time.sleep(5)
                     self.unfollow()
+                    self.quit()
             elif to_follow and unfollow:
                 print("cant be both True")
                 self.quit()
@@ -102,7 +103,10 @@ class GitHubBot(Chrome):
                         self.execute_script("""document.querySelectorAll('input[value="Unfollow"]').forEach(btn=>btn.click())""")
                         time.sleep(5)
                         page_number=page_number+1
-                        if  bool(re.match(self.execute_script("""
-                        return document.querySelector("#js-pjax-container > div.container-xl.px-3.px-md-4.px-lg-5 > div > div.flex-shrink-0.col-12.col-md-9.mb-4.mb-md-0 > div:nth-child(2) > div > div > h3")
-                        """).text,"You aren’t following anybody."))==True:
-                            break
+                        try:
+                            if  bool(re.match(self.execute_script("""
+                            return document.querySelector("#js-pjax-container > div.container-xl.px-3.px-md-4.px-lg-5 > div > div.flex-shrink-0.col-12.col-md-9.mb-4.mb-md-0 > div:nth-child(2) > div > div > h3")
+                            """).text,"You aren’t following anybody."))==True:
+                                break
+                        except:
+                            pass
