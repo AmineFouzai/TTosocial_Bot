@@ -1,9 +1,12 @@
-from selenium.webdriver import Chrome,ChromeOptions 
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import StaleElementReferenceException
-import time
-import os 
+import os
 import re
+import time
+
+from selenium.common.exceptions import StaleElementReferenceException
+from selenium.webdriver import Chrome, ChromeOptions
+from selenium.webdriver.common.by import By
+
+
 class GitHubBot(Chrome):
 
         login:str
@@ -23,7 +26,7 @@ class GitHubBot(Chrome):
                
 
         def run(self,to_follow=None,unfollow=None):
-            
+         
             if self.connect()==False:
                 self.quit()
                 quit()
@@ -34,26 +37,24 @@ class GitHubBot(Chrome):
                 self.follow_developers(
                      start_by=self.trending_developers()
                 )
-                self.quit()
             elif unfollow == True:
-                    time.sleep(5)
                     self.unfollow()
-                    self.quit()
             elif to_follow and unfollow:
                 print("cant be both True")
-                self.quit()
+           
             else:
                 print("cant be both be False")
-                self.quit()
+        
 
         def connect(self):
             try:
-                self.get(f"https://github.com/login?login={self.login}")
-                self.find_element_by_name("password").send_keys(self.password)
-                self.find_element_by_name('commit').click()
+                self.get(f"https://github.com/login")
+                self.find_element(by=By.NAME,value="login").send_keys(self.login)
+                self.find_element(by=By.NAME,value="password").send_keys(self.password)
+                self.find_element(by=By.NAME,value='commit').click()
                 if "Incorrect username or password." in self.page_source :
                     print("Incorrect username or password.")
-                    return False
+                    return 
                 elif "Device verification" in self.page_source:
                     verification_code=input("Enter Verefecation code :")
                     self.find_element_by_name("otp").send_keys(verification_code)
@@ -68,7 +69,7 @@ class GitHubBot(Chrome):
                 
 
         def follow(self):
-            self.execute_script("""document.querySelectorAll('input[value="Follow"]').forEach(btn=>btn.click())""")
+            self.execute_script("""document.querySelectorAll('.btn-sm').forEach(btn=>btn.click())""")
         
         def trending_developers(self):
            
@@ -77,7 +78,7 @@ class GitHubBot(Chrome):
             return [
             developer.text for developer in 
             self.execute_script("""
-            return document.querySelectorAll(".link-gray")
+            return document.querySelectorAll(".Link--secondary")
             """) ]
         
         def follow_developers(self,start_by):
@@ -87,26 +88,19 @@ class GitHubBot(Chrome):
                 if index ==25:
                     break
               
-        def unfollow(self):
-
-                self.execute_script("""
-                return document.querySelector("#dashboard > div > div.f6.text-gray.mt-4 > a:nth-child(3)")
-                """).click()
-                url=self.current_url
-                page_number=1
-               
-                while self.execute_script("""
-                return document.querySelector("#js-pjax-container > div.container-xl.px-3.px-md-4.px-lg-5 > div > div.flex-shrink-0.col-12.col-md-9.mb-4.mb-md-0 > div:nth-child(2) > div > p")
-                """) == None:
-                        
-                        self.get(url+f"&page={page_number}")
-                        self.execute_script("""document.querySelectorAll('input[value="Unfollow"]').forEach(btn=>btn.click())""")
-                        time.sleep(5)
-                        page_number=page_number+1
-                        try:
-                            if  bool(re.match(self.execute_script("""
-                            return document.querySelector("#js-pjax-container > div.container-xl.px-3.px-md-4.px-lg-5 > div > div.flex-shrink-0.col-12.col-md-9.mb-4.mb-md-0 > div:nth-child(2) > div > div > h3")
-                            """).text,"You aren’t following anybody."))==True:
-                                break
-                        except:
-                            pass
+        def unfollow(self,page=1):
+                url=f'{self.current_url}/MedAmineFouzai?&page=x&tab=following'.replace("x", f"{page}")
+                self.get(url)
+                self.execute_script("""document.querySelectorAll('.btn-sm').forEach(btn=>btn.click())""")
+                try:
+                    if(self.execute_script(""" return document.querySelector("#user-profile-frame > div > div > h3").textContent""")=='You aren’t following anybody.'):
+                        return 
+                except Exception as e:
+                    try:
+                        if(self.execute_script(""" return document.querySelector("#user-profile-frame > div > p").textContent""")=='That’s it. You’ve reached the end of\n  your followings.'):
+                            return
+                    except Exception as e:
+                        pass 
+                else:
+                    self.unfollow(page+1)
+                    

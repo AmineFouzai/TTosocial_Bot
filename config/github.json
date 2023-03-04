@@ -1,0 +1,10 @@
+{
+    "attributes":{
+        "githubUserName":"MedAmineFouzai",
+        "emailField":"login",
+        "passwordField":"password",
+        "loginButton":"commit",
+        "TrendingDevelopersLink":".Link--secondary"
+    }
+
+}
